@@ -1086,6 +1086,115 @@ ON a.某列 = b.某列;
 判断奇数：列名 % 2 = 1
 判断偶数：列名 % 2 = 0
 
+==================================================
+36. DATE_ADD
+==================================================
+DATE_ADD(日期, INTERVAL 数字 单位)
+最常用的是加一天：
+DATE_ADD(event_date, INTERVAL 1 DAY)
+意思是：
+event_date + 1 天
+其他单位也可以：
+DATE_ADD(date_col, INTERVAL 7 DAY)    -- 加 7 天
+DATE_ADD(date_col, INTERVAL 1 MONTH)  -- 加 1 个月
+DATE_ADD(date_col, INTERVAL 1 YEAR)   -- 加 1 年
+DATE_ADD(date_col, INTERVAL 2 HOUR)   -- 加 2 小时
+如果是减一天，可以写：
+DATE_SUB(event_date, INTERVAL 1 DAY)
+
+
+
+
+
+
+
+
+
+
+
+
+
+==================================================
+SQL题目类型
+==================================================
+1. 条件聚合题
+看到这种词：
+count of approved
+total amount
+percentage
+rate
+ratio
+average
+
+通常是：
+SUM(IF(condition, 1, 0))
+SUM(IF(condition, amount, 0))
+COUNT(*)
+ROUND(...)
+代表题目不是筛掉某些行，而是保留所有行，在 SELECT 里条件计算。
+
+2. 先找“每组第一/最大/最小”的题
+看到这种词：
+first
+earliest
+latest
+maximum
+minimum
+most recent
+highest
+
+你要立刻想到：
+GROUP BY xxx
+MIN(...)
+MAX(...)
+
+或者：
+ROW_NUMBER() OVER (
+    PARTITION BY xxx
+    ORDER BY xxx
+)
+这类题的核心不是最终计算，而是先造出：
+每组对应的目标行
+
+比如：
+每个 customer 的第一单
+每个 product 的最高价格
+每个 user 的最近登录
+
+3. 分组后再筛的题
+看到这种：
+users with at least 5 orders
+products sold more than 100 units
+classes with more than 5 students
+
+你要想到：
+GROUP BY ...
+HAVING COUNT(*) >= ...
+不是 WHERE COUNT(*)。
+
+4. 两张表关联题
+看到题目给两张表，比如：
+Users + Orders
+Employees + Departments
+Products + Sales
+
+你先问：
+最终结果的主体是谁？
+比如结果要列出所有 users，即使没有订单，也要：
+LEFT JOIN
+如果只关心有匹配记录的，通常：
+JOIN
+
+==================================================
+做题前思考
+==================================================
+题目目标：要求输出什么？
+分母/主体：最终结果基于哪些行？
+第一步中间表：需要先 group / filter / join 出什么？
+第二步中间表：筛完后表长什么样？
+最终计算：SELECT 里算什么？
+容易误放 WHERE 的条件：哪些条件只是算分子，不能筛掉？
+
 
 
 

@@ -1,27 +1,15 @@
 -- 【题目】❌1934. Confirmation Rate (Medium)
 -- 【链接】https://leetcode.com/problems/confirmation-rate/description/
 
-```sql
--- ==========================================
--- My solution
--- ==========================================
-SELECT product_id
-FROM low_fats, recyclable
-WHERE Type = Y
-```
-
 ==========================================
 Analysis
 ==========================================
 ```text
 这题的错误主要有：
 
-1.比反了，题目要的是今天的温度比前一天高
+1.不知道ifnull的用法
 
-2.题目要求的是：
-previous dates / yesterday
-所以更好的做法是用record date而不是id去做比较，
-并且要限制上一行的日期是昨天，因为也有可能是前天
+2.题目里比例的公式没搞清楚
 
 ```
 
@@ -29,10 +17,20 @@ previous dates / yesterday
 -- ==========================================
 -- Correct solution
 -- ==========================================
-SELECT product_id
-from Products
-Where low_fats='Y'
-AND recyclable='Y'
+SELECT 
+    s.user_id,
+    ROUND(
+        IFNULL(
+            SUM(c.action = 'confirmed') / 
+            (SUM(c.action = 'confirmed') + SUM(c.action = 'timeout')),
+            0
+        ),
+        2
+    ) AS confirmation_rate
+FROM Signups s
+LEFT JOIN Confirmations c
+ON s.user_id = c.user_id
+GROUP BY s.user_id;
 ```
 
 ==========================================
@@ -40,20 +38,11 @@ Conclusion
 ==========================================
 ```text
 
-1.子查询：select from后面又接一个select from，从第二个表中搜查需要的信息，写的时候记得给子表命名
-
-2.LAG的用法：LAG（）：取上一行的值，
-比如LAG(column) OVER (ORDER BY id)
-按 id 排序后，取上一行的 column，
-同理还有LEAD()：取下一行的值
-
-3.DATEDIFF（）用来计算天数差
-DATEDIFF（D1，D2）是D1-D2
-同时用DATE_ADD 和 DATE_SUB 也可以做到对日期（年月日小时分钟秒都可以）做加减法
-DATE_ADD/SUB(日期, INTERVAL 数字 单位)
-对于这道题，以下三个语法表达同一个意思：
-DATE_SUB(recordDate, INTERVAL 1 DAY) = pre_d
-DATE_ADD(pre_d, INTERVAL 1 DAY) = recordDate
-DATEDIFF(recordDate, pre_d) = 1
+1.IFNULL 的作用是：
+如果某个值是 NULL，就用另一个值替代它。
+语法：IFNULL(字段或表达式, 替代值)
+意思是：
+如果第一个参数不是 NULL，就返回第一个参数；
+如果第一个参数是 NULL，就返回第二个参数。
 
 ```
