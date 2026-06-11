@@ -1101,7 +1101,10 @@ DATE_ADD(date_col, INTERVAL 1 YEAR)   -- 加 1 年
 DATE_ADD(date_col, INTERVAL 2 HOUR)   -- 加 2 小时
 如果是减一天，可以写：
 DATE_SUB(event_date, INTERVAL 1 DAY)
-
+==================================================
+37. IFNULL：返回空值
+==================================================
+IFNULL(MAX(num), NULL)
 
 
 
